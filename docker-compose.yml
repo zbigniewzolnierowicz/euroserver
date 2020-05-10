@@ -2,7 +2,6 @@ version: "3.8"
 
 volumes:
   portainer_data:
-  grafana_storage:
   nextcloud_database:
   nextcloud_data:
   jackett_data:

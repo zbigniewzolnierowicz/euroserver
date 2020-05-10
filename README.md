@@ -22,14 +22,3 @@ Change ZNC data by going to `localhost:6697`.
 ### Initialization
 
 Before running `docker-compose up`, run `docker-compose up nextcloud_db` first, wait for `mysqld: ready for connections`, then `docker-compose down`, then and only then should you run `docker-compose up`.
-
-### Analytics
-
-Add the monitoring URL, tracking account username and password (you need to create it yourself) to the following environment variables in .env:
-
-```bash
-NEXTCLOUD_PROMETHEUS_USERNAME=
-NEXTCLOUD_PROMETHEUS_PASSWORD=
-```
-
-Then restart Nextcloud, Nextcloud_Exporter and Prometheus.
