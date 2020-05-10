@@ -36,6 +36,9 @@ services:
       - portainer_data:/data:rw
     labels:
       - "traefik.http.routers.portainer.rule=Host(`portainer.${SERVER_ADDRESS}`)"
+      - "traefik.http.routers.portainer.tls=true"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.tls.certresolver=le"
 
   nextcloud_db:
     container_name: "Storage_Nextcloud_Database"
@@ -66,7 +69,19 @@ services:
     env_file:
       - "./nextcloud/mariadb.env"
     labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.nextcloud-caldav.redirectregex.permanent=true"
+      - "traefik.http.middlewares.nextcloud-caldav.redirectregex.regex=^https://(.*)/.well-known/(card|cal)dav"
+      - "traefik.http.middlewares.nextcloud-caldav.redirectregex.replacement=https://$${1}/remote.php/dav/"
+      - "traefik.http.middlewares.nextcloud-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.nextcloud-http.entrypoints=web"
+      - "traefik.http.routers.nextcloud-http.rule=Host(`nextcloud.${SERVER_ADDRESS}`)"
+      - "traefik.http.routers.nextcloud-http.middlewares=nextcloud-https@docker"
+      - "traefik.http.routers.nextcloud.entrypoints=websecure"
       - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.${SERVER_ADDRESS}`)"
+      - "traefik.http.routers.nextcloud.middlewares=nextcloud-caldav@docker"
+      - "traefik.http.routers.nextcloud.tls=true"
+      - "traefik.http.routers.nextcloud.tls.certresolver=le"
 
   jackett:
     container_name: "PVR_Jackett"
@@ -95,6 +110,9 @@ services:
       - ${FILE_PATH}/Downloads:/downloads
     labels:
       - "traefik.http.routers.deluge.rule=Host(`deluge.${SERVER_ADDRESS}`)"
+      - "traefik.http.routers.deluge.tls=true"
+      - "traefik.http.routers.deluge.entrypoints=websecure"
+      - "traefik.http.routers.deluge.tls.certresolver=le"
 
   sonarr:
     container_name: "PVR_Sonarr"
@@ -113,6 +131,9 @@ services:
       - ${FILE_PATH}:/media
     labels:
       - "traefik.http.routers.sonarr.rule=Host(`sonarr.${SERVER_ADDRESS}`)"
+      - "traefik.http.routers.sonarr.tls=true"
+      - "traefik.http.routers.sonarr.entrypoints=websecure"
+      - "traefik.http.routers.sonarr.tls.certresolver=le"
 
   radarr:
     container_name: "PVR_Radarr"
@@ -131,6 +152,9 @@ services:
       - ${FILE_PATH}:/media
     labels:
       - "traefik.http.routers.radarr.rule=Host(`radarr.${SERVER_ADDRESS}`)"
+      - "traefik.http.routers.radarr.tls=true"
+      - "traefik.http.routers.radarr.entrypoints=websecure"
+      - "traefik.http.routers.radarr.tls.certresolver=le"
 
   znc:
     image: linuxserver/znc
@@ -148,6 +172,7 @@ services:
   minecraft:
     container_name: "Game_Minecraft"
     image: itzg/minecraft-server
+    user: ${PUID}:${PGID}
     ports:
       - 25565:25565
     environment:
