@@ -145,8 +145,8 @@ services:
       OPS: '${OPS}'
     volumes:
       - minecraft_data:/data
-      - ./minecraft/server.properties:/data/server.properties
-      - ./minecraft/world:/data/world
-      - ./minecraft/world_nether:/data/world_nether
-      - ./minecraft/world_the_end:/data/world_the_end
-      - ./minecraft/plugins:/data/plugins
+      - ${MINECRAFT_PATH}/server.properties:/data/server.properties
+      - ${MINECRAFT_PATH}/world:/data/world
+      - ${MINECRAFT_PATH}/world_nether:/data/world_nether
+      - ${MINECRAFT_PATH}/world_the_end:/data/world_the_end
+      - ${MINECRAFT_PATH}/plugins:/data/plugins

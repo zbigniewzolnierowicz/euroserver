@@ -5,14 +5,25 @@
 Create an .env file with the following:
 
 ```bash
-# Your hostname
+# Remember to change this to your hostname
 SERVER_ADDRESS=
-# The password Nextcloud will use to connect to MariaDB
+# Password that Nextcloud uses to communicate with MariaDB
 MYSQL_PASSWORD=
-# The password for MariaDB's maintenance
+# Password for MariaDB maintenance
 MYSQL_ROOT_PASSWORD=
-# Your e-mail address
+# Your email address for Let's Encrypt
 TRAEFIK_CERTIFICATESRESOLVERS_LE_ACME_EMAIL=
+# Your timezone
+TZ=
+# The UID and GID of the *dedicated* account for data
+PUID=
+PGID=
+# Path to files for Sonarr, Radarr, etc.
+FILE_PATH=
+# Path to Minecraft files
+MINECRAFT_PATH=
+# Comma-separated Minecraft server operator IGNs
+OPS=
 ```
 
 Change ZNC data by going to `localhost:6697`.
