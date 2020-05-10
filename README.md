@@ -32,4 +32,4 @@ Change ZNC data by going to `localhost:6697`.
 
 ### Initialization
 
-Before running `docker-compose up`, run `docker-compose up nextcloud_db` first, wait for `mysqld: ready for connections`, then `docker-compose down`, then and only then should you run `docker-compose up`.
+Before running `docker-compose up`, run `docker-compose up nextcloud_db` first, wait for `[Note] [Entrypoint]: MySQL init process done. Ready for start up.`, then `docker-compose down`, then and only then should you run `docker-compose up`.

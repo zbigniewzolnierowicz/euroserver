@@ -62,7 +62,7 @@ services:
       - nextcloud_db
     environment:
       MYSQL_HOST: 'nextcloud_db:3306'
-      NEXTCLOUD_TRUSTED_DOMAINS: 'nextcloud.${SERVER_ADDRESS} nextcloud 172.19.0.4'
+      NEXTCLOUD_TRUSTED_DOMAINS: 'nextcloud.${SERVER_ADDRESS} nextcloud'
       MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
     env_file:
       - "./nextcloud/mariadb.env"
@@ -128,12 +128,18 @@ services:
       - "traefik.http.routers.radarr.rule=Host(`radarr.${SERVER_ADDRESS}`)"
 
   znc:
-    container_name: "IRC_ZNC"
-    image: znc
-    ports:
-      - 6697:6697
+    image: linuxserver/znc
+    container_name: znc
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
     volumes:
-      - ${PWD}/znc:/znc-data
+      - ./znc:/config
+    ports:
+      - 6501:6501
+    restart: unless-stopped
+
   minecraft:
     container_name: "Game_Minecraft"
     image: itzg/minecraft-server
@@ -144,9 +150,4 @@ services:
       EULA: 'true'
       OPS: '${OPS}'
     volumes:
-      - minecraft_data:/data
-      - ${MINECRAFT_PATH}/server.properties:/data/server.properties
-      - ${MINECRAFT_PATH}/world:/data/world
-      - ${MINECRAFT_PATH}/world_nether:/data/world_nether
-      - ${MINECRAFT_PATH}/world_the_end:/data/world_the_end
-      - ${MINECRAFT_PATH}/plugins:/data/plugins
+      - ${MINECRAFT_PATH}:/data
