@@ -92,9 +92,9 @@ services:
       - jackett_data:/config
       - ${FILE_PATH}/Downloads/watching:/downloads
     environment:
-      PUID: '${PUID}'
-      PGID: '${PGID}'
-      TZ: '${TZ}'
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
 
   deluge:
     container_name: "PVR_Deluge"
@@ -102,9 +102,9 @@ services:
     ports:
       - 8112:8112
     environment:
-      PUID: '${PUID}'
-      PGID: '${PGID}'
-      TZ: '${TZ}'
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
     volumes:
       - deluge_data:/config
       - ${FILE_PATH}/Downloads:/downloads
@@ -120,9 +120,9 @@ services:
     ports:
       - 8989:8989
     environment:
-      PUID: '${PUID}'
-      PGID: '${PGID}'
-      TZ: '${TZ}'
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
     depends_on:
       - jackett
       - deluge
@@ -141,9 +141,9 @@ services:
     ports:
       - 7878:7878
     environment:
-      PUID: '${PUID}'
-      PGID: '${PGID}'
-      TZ: '${TZ}'
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
     depends_on:
       - jackett
       - deluge
@@ -178,6 +178,6 @@ services:
     environment:
       TYPE: 'paper'
       EULA: 'true'
-      OPS: '${OPS}'
+      OPS: ${OPS}
     volumes:
       - ${MINECRAFT_PATH}:/data
