@@ -1,0 +1,153 @@
+version: "3.8"
+
+volumes:
+  portainer_data:
+  grafana_storage:
+  nextcloud_database:
+  nextcloud_data:
+  jackett_data:
+  deluge_data:
+  sonarr_data:
+  radarr_data:
+  minecraft_data:
+
+services:
+  reverse_proxy:
+    container_name: "ReverseProxy_Traefik"
+    image: traefik:v2.0
+    command: --providers.docker
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    environment:
+      TRAEFIK_CERTIFICATESRESOLVERS_LE_ACME_EMAIL: '${TRAEFIK_CERTIFICATESRESOLVERS_LE_ACME_EMAIL}'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - $PWD/traefik.toml:/etc/traefik/traefik.toml:ro
+
+  portainer:
+    container_name: "DockerManagement_Portainer"
+    image: portainer/portainer
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - portainer_data:/data:rw
+    labels:
+      - "traefik.http.routers.portainer.rule=Host(`portainer.${SERVER_ADDRESS}`)"
+      - "traefik.http.services.portainer.loadbalancer.port=9000"
+
+  nextcloud_db:
+    container_name: "Storage_Nextcloud_Database"
+    image: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    volumes:
+      - nextcloud_database:/var/lib/mysql
+    environment:
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+    env_file:
+      - "./nextcloud/mariadb.env"
+
+  nextcloud:
+    container_name: "Storage_Nextcloud"
+    image: nextcloud:apache
+    ports:
+      - 8064:80
+    volumes:
+      - nextcloud_data:/var/www/html
+    depends_on:
+      - nextcloud_db
+    environment:
+      MYSQL_HOST: 'nextcloud_db:3306'
+      NEXTCLOUD_TRUSTED_DOMAINS: 'nextcloud.${SERVER_ADDRESS} nextcloud 172.19.0.4'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+    env_file:
+      - "./nextcloud/mariadb.env"
+    labels:
+      - "traefik.http.routers.nextcloud.rule=Host(`nextcloud.${SERVER_ADDRESS}`)"
+
+  jackett:
+    container_name: "PVR_Jackett"
+    image: linuxserver/jackett
+    ports:
+      - 9117:9117
+    volumes:
+      - jackett_data:/config
+      - ${FILE_PATH}/Downloads/watching:/downloads
+    environment:
+      PUID: '${PUID}'
+      PGID: '${PGID}'
+      TZ: '${TZ}'
+
+  deluge:
+    container_name: "PVR_Deluge"
+    image: linuxserver/deluge
+    ports:
+      - 8112:8112
+    environment:
+      PUID: '${PUID}'
+      PGID: '${PGID}'
+      TZ: '${TZ}'
+    volumes:
+      - deluge_data:/config
+      - ${FILE_PATH}/Downloads:/downloads
+    labels:
+      - "traefik.http.routers.deluge.rule=Host(`deluge.${SERVER_ADDRESS}`)"
+
+  sonarr:
+    container_name: "PVR_Sonarr"
+    image: linuxserver/sonarr
+    ports:
+      - 8989:8989
+    environment:
+      PUID: '${PUID}'
+      PGID: '${PGID}'
+      TZ: '${TZ}'
+    volumes:
+      - sonarr_data:/config
+      - ${FILE_PATH}:/media
+    labels:
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.${SERVER_ADDRESS}`)"
+
+  radarr:
+    container_name: "PVR_Radarr"
+    image: linuxserver/radarr
+    ports:
+      - 7878:7878
+    environment:
+      PUID: '${PUID}'
+      PGID: '${PGID}'
+      TZ: '${TZ}'
+    volumes:
+      - radarr_data:/config
+      - ${FILE_PATH}:/media
+    labels:
+      - "traefik.http.routers.radarr.rule=Host(`radarr.${SERVER_ADDRESS}`)"
+
+  znc:
+    container_name: "IRC_ZNC"
+    image: znc
+    ports:
+      - 6697:6697
+    volumes:
+      - ${PWD}/znc:/znc-data
+  minecraft:
+    container_name: "Game_Minecraft"
+    image: itzg/minecraft-server
+    ports:
+      - 25565:25565
+    environment:
+      TYPE: 'paper'
+      EULA: 'true'
+      OPS: '${OPS}'
+    volumes:
+      - minecraft_data:/data
+      - ./minecraft/server.properties:/data/server.properties
+      - ./minecraft/world:/data/world
+      - ./minecraft/world_nether:/data/world_nether
+      - ./minecraft/world_the_end:/data/world_the_end
+      - ./minecraft/plugins:/data/plugins

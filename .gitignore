@@ -1,0 +1,6 @@
+.env
+files
+minecraft/plugins/*
+minecraft/world
+minecraft/world_nether
+minecraft/world_the_end

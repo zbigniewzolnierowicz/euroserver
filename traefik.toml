@@ -1,0 +1,16 @@
+[api]
+  dashboard = true
+  insecure = true
+[providers.docker]
+  endpoint = "unix:///var/run/docker.sock"
+[certificatesResolvers.le.acme]
+  storage = "acme.json"
+  caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  [certificatesResolvers.le.acme.tlsChallenge]
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+  [entryPoints.websecure]
+    address = ":443"
+  [entryPoints.metrics]
+    address = ":8082"
