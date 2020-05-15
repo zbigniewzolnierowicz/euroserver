@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.7"
 
 volumes:
   portainer_data:
@@ -13,7 +13,7 @@ volumes:
 services:
   reverse_proxy:
     container_name: "ReverseProxy_Traefik"
-    image: traefik:v2.0
+    image: traefik:v2.2
     command: --providers.docker
     ports:
       - 80:80
@@ -23,7 +23,7 @@ services:
       TRAEFIK_CERTIFICATESRESOLVERS_LE_ACME_EMAIL: '${TRAEFIK_CERTIFICATESRESOLVERS_LE_ACME_EMAIL}'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
-      - $PWD/traefik.toml:/etc/traefik/traefik.toml:ro
+      - ./traefik.toml:/etc/traefik/traefik.toml:ro
 
   portainer:
     container_name: "DockerManagement_Portainer"
