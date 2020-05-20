@@ -5,7 +5,6 @@
   endpoint = "unix:///var/run/docker.sock"
 [certificatesResolvers.le.acme]
   storage = "acme.json"
-  caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
   [certificatesResolvers.le.acme.tlsChallenge]
 [entryPoints]
   [entryPoints.web]
