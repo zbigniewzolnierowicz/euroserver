@@ -204,4 +204,4 @@ services:
     image: itzg/mc-router
     ports:
       - 25565:25565
-    command: --mapping=vanilla.server.zolnierowi.cz=vanilla:25565,forge.server.zolnierowi.cz=forge:25565
+    command: --mapping=vanilla.${SERVER_ADDRESS}=vanilla:25565,forge.${SERVER_ADDRESS}=forge:25565
