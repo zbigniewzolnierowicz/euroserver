@@ -8,7 +8,7 @@ volumes:
   deluge_data:
   sonarr_data:
   radarr_data:
-  minecraft_data:
+
 
 services:
   reverse_proxy:
@@ -169,15 +169,39 @@ services:
       - 6501:6501
     restart: unless-stopped
 
-  minecraft:
-    container_name: "Game_Minecraft"
+  vanilla:
+    container_name: "Game_Minecraft_Vanilla"
     image: itzg/minecraft-server
     user: ${PUID}:${PGID}
-    ports:
-      - 25565:25565
     environment:
       TYPE: 'paper'
       EULA: 'true'
-      OPS: ${OPS}
     volumes:
-      - ${MINECRAFT_PATH}:/data
+      - ${MINECRAFT_PATH}/ops.json:/data/ops.json
+      - ${MINECRAFT_PATH}/vanilla/server.properties:/data/server.properties
+      - ${MINECRAFT_PATH}/vanilla/plugins:/data/plugins
+      - ${MINECRAFT_PATH}/vanilla/world:/data/world
+      - ${MINECRAFT_PATH}/vanilla/world_nether:/data/world_nether
+      - ${MINECRAFT_PATH}/vanilla/world_end:/data/world_the_end
+
+  forge:
+    container_name: "Game_Minecraft_Modded"
+    image: itzg/minecraft-server
+    user: ${PUID}:${PGID}
+    environment:
+      TYPE: 'forge'
+      EULA: 'true'
+    volumes:
+      - ${MINECRAFT_PATH}/ops.json:/data/ops.json
+      - ${MINECRAFT_PATH}/modded/server.properties:/data/server.properties
+      - ${MINECRAFT_PATH}/modded/mods:/data/mods
+      - ${MINECRAFT_PATH}/modded/world:/data/world
+      - ${MINECRAFT_PATH}/modded/world_nether:/data/world_nether
+      - ${MINECRAFT_PATH}/modded/world_end:/data/world_the_end
+  
+  router:
+    container_name: "Game_Minecraft_Router"
+    image: itzg/mc-router
+    ports:
+      - 25565:25565
+    command: --mapping=vanilla.server.zolnierowi.cz=vanilla:25565,forge.server.zolnierowi.cz=forge:25565
