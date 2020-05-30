@@ -20,7 +20,7 @@ services:
       - 443:443
       - 8080:8080
     environment:
-      TRAEFIK_CERTIFICATESRESOLVERS_LE_ACME_EMAIL: '${TRAEFIK_CERTIFICATESRESOLVERS_LE_ACME_EMAIL}'
+      TRAEFIK_CERTIFICATESRESOLVERS_LE_ACME_EMAIL: "${TRAEFIK_CERTIFICATESRESOLVERS_LE_ACME_EMAIL}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
       - ./traefik.toml:/etc/traefik/traefik.toml:ro
@@ -48,8 +48,8 @@ services:
     volumes:
       - nextcloud_database:/var/lib/mysql
     environment:
-      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
-      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
     env_file:
       - "./nextcloud/mariadb.env"
 
@@ -63,9 +63,9 @@ services:
     depends_on:
       - nextcloud_db
     environment:
-      MYSQL_HOST: 'nextcloud_db:3306'
-      NEXTCLOUD_TRUSTED_DOMAINS: 'nextcloud.${SERVER_ADDRESS} nextcloud'
-      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+      MYSQL_HOST: "nextcloud_db:3306"
+      NEXTCLOUD_TRUSTED_DOMAINS: "nextcloud.${SERVER_ADDRESS} nextcloud"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
     env_file:
       - "./nextcloud/mariadb.env"
     labels:
@@ -174,8 +174,8 @@ services:
     image: itzg/minecraft-server
     user: ${PUID}:${PGID}
     environment:
-      TYPE: 'paper'
-      EULA: 'true'
+      TYPE: "paper"
+      EULA: "true"
     volumes:
       - ${MINECRAFT_PATH}/ops.json:/data/ops.json
       - ${MINECRAFT_PATH}/vanilla/server.properties:/data/server.properties
@@ -189,8 +189,10 @@ services:
     image: itzg/minecraft-server
     user: ${PUID}:${PGID}
     environment:
-      TYPE: 'forge'
-      EULA: 'true'
+      TYPE: "forge"
+      EULA: "true"
+      VERSION: "1.14.4"
+      FORGEVERSION: "28.2.17"
     volumes:
       - ${MINECRAFT_PATH}/ops.json:/data/ops.json
       - ${MINECRAFT_PATH}/modded/server.properties:/data/server.properties
